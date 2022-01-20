@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace FontSvgImageSource
 {
@@ -22,10 +25,10 @@ namespace FontSvgImageSource
             PathDataComparer.Compare();
 
             // correct size icon and button but blurry
-            //svgImageProvider = new WinUIDemoSvgImageProvider();
+            svgImageProvider = new WinUIDemoSvgImageProvider();
 
             // correct size icon, not blurry but button size is incorrect
-            svgImageProvider = new WinUIDemoSvgImageProvider2();
+            // svgImageProvider = new WinUIDemoSvgImageProvider2();
 
             IFontProvider fontProvider = new MaterialOutlineFontProvider(55); // change as required
             var cyclingGlyphs = new CyclingList<string>(fontProvider.Glyphs);
@@ -52,14 +55,12 @@ namespace FontSvgImageSource
         private void AddIcons(string glyph,bool inButton = true)
         {
             iconPanel.Children.Clear();
-            var (canvasImage, textBlock) = GetComparisonIcons(fontFamily, fontSize, glyph, iconColor);
+            var comparisonIcons = GetComparisonIcons(fontFamily, fontSize, glyph, iconColor);
             var svgImage = svgImageProvider.Provide(fontFamily, fontSize, glyph, iconColor);
 
-            canvasImage.SetValue(StackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            svgImage.SetValue(StackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-
-            new List<UIElement> { canvasImage, textBlock, svgImage }.ForEach(icon =>
+            comparisonIcons.Concat(new UIElement[] { svgImage }).ToList().ForEach(icon =>
             {
+                icon.SetValue(StackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Left);
                 AddIcon(inButton ? new Button { Content = icon } : icon );
             });
         }
@@ -69,11 +70,21 @@ namespace FontSvgImageSource
             iconPanel.Children.Add(icon);
         }
 
-        private (Image canvasImage, TextBlock textBlock) GetComparisonIcons(string fontFamily, float fontSize, string glyph, Color iconColor)
+        private Brush IconBrush => new SolidColorBrush(iconColor);
+
+        private IEnumerable<UIElement> GetComparisonIcons(string fontFamily, float fontSize, string glyph, Color iconColor)
         {
             var canvasImage = ButtonRendererFontImage.Get(fontFamily, fontSize, glyph, iconColor);
-            var textBlock = new TextBlock { FontSize = fontSize, Foreground = new SolidColorBrush(iconColor), FontFamily = new FontFamily(fontFamily), Text = glyph };
-            return (canvasImage, textBlock);
+            var textBlock = new TextBlock { FontSize = fontSize, Foreground = IconBrush, FontFamily = new FontFamily(fontFamily), Text = glyph };
+            var geometry1 = GetGeometry(fontFamily, fontSize, glyph);
+            var geometry2 = GetGeometry(fontFamily, fontSize, glyph);
+            var path = new Path { Data = geometry1, Fill = IconBrush };
+            var pathIcon = new PathIcon { Data = geometry2, Foreground = IconBrush };
+            return new UIElement[] { canvasImage, textBlock, path, pathIcon };
+        }
+
+        private Geometry GetGeometry(string fontFamily, float fontSize, string glyph){
+            return GeometryConverter.Convert(svgImageProvider.ProvideSvgPathData(fontFamily, fontSize, glyph));
         }
 
     }

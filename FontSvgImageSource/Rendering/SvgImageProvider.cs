@@ -27,14 +27,21 @@ namespace FontSvgImageSource
             return svgImage;
         }
 
+        public string ProvideSvgPathData(string fontFamily, float fontSize, string glyph)
+        {
+            return fontSvgPathDataProvider.Provide(fontFamily, glyph, GetPathDataFontSize(fontSize));
+        }
+
         private SvgImageSource SvgImageSource(string svgPathData, Color color, string svgAttributes)
         {
             var svgColor = $"rgb({color.R},{color.G},{color.B})";
             var opacity = ((double)color.A) / 255;
-            var svg = Svg($"<path fill-opacity=\"{opacity}\"  fill=\"{svgColor}\" d=\"{svgPathData}\"/>", svgAttributes);
+            var svg = Svg($"<path {PathAttributes()} fill-opacity=\"{opacity}\"  fill=\"{svgColor}\" d=\"{svgPathData}\"/>", svgAttributes);
             var imageSource = SvgImageSourceHelper.FromContentAsync(svg).GetAwaiter().GetResult();
             return imageSource;
         }
+
+        protected virtual string PathAttributes() { return string.Empty; }
 
         protected virtual string SvgAttributes() { return string.Empty; }
 
@@ -49,6 +56,8 @@ namespace FontSvgImageSource
 
         
         protected virtual float GetPathDataFontSize(float fontSize) => fontSize;
+
+        
     }
 
 

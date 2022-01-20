@@ -6,5 +6,6 @@ namespace FontSvgImageSource
     public interface ISvgImageProvider
     {
         Image Provide(string fontFamily, float fontSize, string glyph, Color iconColor);
+        string ProvideSvgPathData(string fontFamily, float fontSize, string glyph);
     }
 }

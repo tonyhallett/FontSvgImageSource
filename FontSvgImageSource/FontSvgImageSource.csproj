@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GeometryConverter.cs" />
     <Compile Include="Rendering\WinUIDemoSvgImageProvider.cs" />
     <Compile Include="Rendering\WinUIDemoSvgImageProvider2.cs" />
     <Compile Include="SvgPathData\WinUI\CanvasGeometryToSvgPathReader.cs" />
