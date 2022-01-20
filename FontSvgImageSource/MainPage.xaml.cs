@@ -80,7 +80,9 @@ namespace FontSvgImageSource
             var geometry2 = GetGeometry(fontFamily, fontSize, glyph);
             var path = new Path { Data = geometry1, Fill = IconBrush };
             var pathIcon = new PathIcon { Data = geometry2, Foreground = IconBrush };
-            return new UIElement[] { canvasImage, textBlock, path, pathIcon };
+            var fontIcon = new FontIcon { FontFamily = new FontFamily(fontFamily), FontSize = fontSize, Glyph = glyph, Foreground = IconBrush };
+            //var iconSourceElement = new IconSourceElement { IconSource = new FontIconSource { FontFamily = new FontFamily(fontFamily), FontSize = fontSize, Glyph = glyph }, Foreground = IconBrush }; !
+            return new UIElement[] { canvasImage, textBlock, path, pathIcon, fontIcon };
         }
 
         private Geometry GetGeometry(string fontFamily, float fontSize, string glyph){

@@ -13,7 +13,9 @@ namespace FontSvgImageSource
                 FontFamily = fontFamily,
                 FontSize = fontSize,
             };
-            var canvasGeometry = CanvasGeometry.CreateText(new CanvasTextLayout(CanvasDevice.GetSharedDevice(), glyph, canvasTextFormat, fontSize, fontSize));
+            var canvasTextLayout = new CanvasTextLayout(CanvasDevice.GetSharedDevice(), glyph, canvasTextFormat, fontSize, fontSize);
+            canvasTextLayout.HorizontalAlignment = CanvasHorizontalAlignment.Left;
+            var canvasGeometry = CanvasGeometry.CreateText(canvasTextLayout);
             var pathReader = new CanvasGeometryToSvgPathReader();
             canvasGeometry.SendPathTo(pathReader);
             return pathReader.Path;
