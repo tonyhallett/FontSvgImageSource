@@ -6,7 +6,7 @@ namespace FontSvgImageSource
     {
         public static Image Get(string fontFamily, float fontSize, string glyph, Windows.UI.Color iconColor)
         {
-            var canvasImageSource = FontImageSourceHandler. CanvasImageSource(fontFamily, fontSize, glyph, iconColor);
+            var canvasImageSource = FontImageSourceHandler.CanvasImageSource(fontFamily, fontSize, glyph, iconColor);
             return  new Image
             {
                 Source = canvasImageSource,
